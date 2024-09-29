@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+        background-image: linear-gradient(to right, #BBFFFF, #CCCCFF);
+        }
+    </style>
+</head>
+<body>
+<a href="{% url 'shop:home' %}">返回首页</a>
+<main>
+	{% if error_msg %}
+		<p>{{ error_msg }}</p>
+	{% endif %}
+
+	{% for post in post_list %}
+	    <div class="product">
+                <h3><a href="{% url 'shop:search-detail' post.id %}">{{ post.名称 }} - {{ post.id }}</a></h3>
+                <img src="{{ post.图片.url }}" alt="{{ post.名称 }}">
+                <h4>{{ post.价格 }}元</h4>
+        </div>
+	{% empty %}
+		<div class="no-post">暂时还没有发布的文章！</div>
+    {% endfor %}
+</main>
+</body>
+</html>

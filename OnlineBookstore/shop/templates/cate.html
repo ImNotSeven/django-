@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="{% block 关键词 %}书,儿童书籍,社会科学{% endblock 关键词 %}">
+    <meta name="description" content="{% block 网页描述 %}这是网上书店{% endblock 网页描述 %}">
+    <title>{% block 网页标题 %}网上书店{% endblock 网页标题 %}</title>
+    <style>
+    #top_right {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        display: flex; /* 使用 Flexbox 进行布局 */
+        align-items: center; /* 垂直居中 */
+    }
+
+    /* 图片和链接的样式 */
+    #top_right img, #top_right a {
+        margin-right: 10px; /* 设置元素间的右边距 */
+    }
+    #nav-container {
+        padding: 70px 0; /* 上下留出一定的空间 */
+        width: 100%;
+    }
+
+    /* 导航栏样式 */
+    nav {
+        display: inline-block; /* 将导航栏显示为内联块元素 */
+    }
+
+    /* 单个链接样式 */
+    nav a {
+        display: block; /* 将链接转换为块级元素 */
+        margin-bottom: 5px; /* 设置链接之间的垂直间距 */
+        text-decoration: none; /* 去除链接的下划线 */
+    }
+    main {
+            margin-top:20px;
+
+    }
+    body{
+    background-image: linear-gradient(to right, #BBFFFF, #CCCCFF);
+    }
+
+    .category {
+    margin-bottom: 20px; /* 分类之间的间距 */
+    }
+
+    .products {
+    display: flex; /* 将商品设置为弹性布局 */
+    flex-wrap: wrap; /* 允许商品换行 */
+    }
+
+    .product {
+    flex: 0 0 auto; /* 商品不放大也不缩小 */
+    margin-right: 10px; /* 商品之间的间距 */
+    }
+    hr {
+           height: 5px; /* 高度 */
+            background-color: #66B2FF; /* 背景颜色 */
+            border: none; /* 边框 */
+            margin: 20px 0; /* 外边距 */
+    }
+    .cart_link_container {
+            position: relative;
+    }
+    .cart_info {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #BBFFFF;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 999;
+            /* 设置初始尺寸 */
+            width: 200px;
+            height: 400px;
+            overflow: auto; /* 添加滚动条，以防内容过多 */
+            transition: all 0.3s ease; /* 添加过渡效果 */
+    }
+    .cart_link_container:hover .cart_info {
+            display: block;
+            /* 调整展开时的尺寸 */
+            width: 150px;
+            height: 250px;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <center>
+            <img src="{% static 'images/Onlinebookstore.png' %}" alt="网上书店"  style="float:left;">
+        </center>
+    </header>
+    <div id="top_right">
+    <a href="http://127.0.0.1:8000/admin/">管理员登录</a>
+    <img src="{% static 'images/cart.png' %}">
+    <div class="cart_link_container">
+        <a href="#">购物车</a>
+        <div class="cart_info">
+            <!-- 这里放置购物车信息 -->
+            <ul class="cart_goods_show">
+                {% for cart_goods in cart_goods_list %}
+                <li>
+                    <img src="{{ cart_goods.图片.url }}" style="width:100px;" alt="{{ 每个类别.图片.url }}">
+                    {{ cart_goods.名称 }}
+                    <div>{{ cart_goods.goods_num }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <a href="http://127.0.0.1:8000/user/user_center/">个人中心</a>
+    {% if user.is_authenticated %}
+    <a href="http://127.0.0.1:8000/user/logout/">登出</a>
+    {% else %}
+    <a href="http://127.0.0.1:8000/user/login/">登录/注册</a>
+    {% endif %}
+    </div>
+    <div id="nav-container">
+    <nav>
+        <a href="{% url 'shop:home' %}">所有商品</a>
+        {% for 每个类别 in 所有类别 %}
+            <a href="{% url 'shop:category' 每个类别.id %}">{{ 每个类别.名称 }}</a>
+        {% endfor %}
+    </nav>
+    </div>
+
+    <main>
+    {% for 每个类别, 该类商品 in 类别与商品 %}
+    <div class="category">
+        <h2>{{ 每个类别.名称 }}</h2>
+        <img src="{{ 每个类别.图片.url }}" alt="{{ 每个类别.名称 }}">
+        <div class="products">
+            {% for 每件商品 in page_data %}
+            <div class="product">
+                <h3><a href="{% url 'shop:detail' 每个类别.id 每件商品.id %}">{{ 每件商品.名称 }}</a></h3>
+                <img src="{{ 每件商品.图片.url }}" alt="{{ 每件商品.名称 }}">
+                <h4>{{ 每件商品.价格 }}元</h4>
+
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+    </div>
+    {% endfor %}
+    </main>
+
+    <footer>
+        <center>&copy;网上书店，版权所有</center>
+    </footer>
+</body>
+</html>
